@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -14,6 +15,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import cliente.process.ClienteProcess;
 
 public class ComunicacionInterna {	
 
@@ -42,10 +44,12 @@ public class ComunicacionInterna {
 		
 		Comunicacion[] dispositivosComunicativos = {(Comunicacion)cafeteraA, (Comunicacion)cafeteraB, (Comunicacion)ledA, (Comunicacion)ledB};
 		
+		ClienteProcess clienteProcess = new ClienteProcess();
+		clienteProcess.enviarInfoAServer("Prueba1");
 		
 		
-		ComunicacionInterna comunicacionInterna = new ComunicacionInterna();
-		comunicacionInterna.enviarInfoDispositivos(dispositivosComunicativos);
+
+		
 		
 	}
 	
@@ -70,46 +74,13 @@ public class ComunicacionInterna {
 			
 			String mensajeAEnviar = dispositivo.solicitarInfo();
 			
-			enviarInfoAServerProcess(mensajeAEnviar);
+		//	boolean exitoso= enviarInfoAServerProcess(mensajeAEnviar);
 			
-		}
-		
-		
+//			if(exitoso == true)
+//				System.out.println("la informacion se envio");
+//		else 
+//				System.out.println("la informacion NO  se envio");
+			
+		}	
 	}
-	
-	
-	public  boolean enviarInfoAServerProcess(String info) {
-		
-		Builder builder =crearInvocador("enviarinfo");
-		Response response = builder.post(Entity.entity("", MediaType.TEXT_PLAIN));
-		
-		if(response.toString().equals("true"))
-				return true;
-		else 
-				return false;
-	}
-	
-	public String probarComunicacionProcess() {
-		
-		Builder builder =crearInvocador("probarcomunicacion");
-		Response response = builder.get();	
-		
-		return response.toString() ;
-
-	}
-	
-	public Builder crearInvocador(String finalPath) {
-	
-		 Client client = ClientBuilder.newClient();
-		  String path= "http://localhost:8080/Prueba_WebService/restservices/serviciooyente/" + finalPath;
-		  UriBuilder uriBuilder = UriBuilder.fromUri(path);
-		  
-		  URI urlServicioSaludo = uriBuilder.build();
-		  
-		  WebTarget serviceObjetivo = client.target(urlServicioSaludo);
-		  Builder invocationBuilder = serviceObjetivo.request(MediaType.TEXT_PLAIN);
-		  return invocationBuilder;
-	}
-	
-	
 }
